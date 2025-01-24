@@ -14,14 +14,15 @@ print(add_arrays(arr1, [1, 2, 3]))
 def add_arrays(arr1, arr2):
     """Adds two arrays element-wise.
 
-    Args:
+    args:
        arr1: A list of integers or floats.
        arr2: A list of integers or floats.
 
     Returns:
        A new list with the element-wise sum of arr1 and arr2.
        If arr1 and arr2 are not the same shape, returns None.
-       """
-       if len(arr1) != len(arr2):
-           return None  # Return None if arrays are not the same length
-       return [arr1[i] + arr2[i] for i in range(len(arr1))]
+    """
+    if len(arr1) != len(arr2):
+        return None  # Return None if arrays are not the same length
+
+     return [arr1[i] + arr2[i] for i in range(len(arr1))]
