@@ -70,10 +70,10 @@ def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32,
                 # Print step metrics every 100 steps (after step, not before)
                 if (step + 1) % 100 == 0:
                     step_cost = sess.run(loss,
-                                        feed_dict={x: X_batch, y: Y_batch})
+                                         feed_dict={x: X_batch, y: Y_batch})
                     step_accuracy = sess.run(accuracy,
-                                            feed_dict={x: X_batch,
-                                                      y: Y_batch})
+                                             feed_dict={x: X_batch,
+                                                        y: Y_batch})
                     print("\tStep {}:".format(step + 1))
                     print("\t\tCost: {}".format(step_cost))
                     print("\t\tAccuracy: {}".format(step_accuracy))
@@ -81,10 +81,10 @@ def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32,
             # Calculate and print metrics after each epoch
             train_cost = sess.run(loss, feed_dict={x: X_train, y: Y_train})
             train_accuracy = sess.run(accuracy,
-                                     feed_dict={x: X_train, y: Y_train})
+                                      feed_dict={x: X_train, y: Y_train})
             valid_cost = sess.run(loss, feed_dict={x: X_valid, y: Y_valid})
             valid_accuracy = sess.run(accuracy,
-                                     feed_dict={x: X_valid, y: Y_valid})
+                                      feed_dict={x: X_valid, y: Y_valid})
 
             print("After {} epochs:".format(epoch + 1))
             print("\tTraining Cost: {}".format(train_cost))
