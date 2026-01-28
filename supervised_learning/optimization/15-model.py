@@ -34,7 +34,7 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
     x = tf.placeholder(tf.float32, shape=[None, X_train.shape[1]], name='x')
     y = tf.placeholder(tf.float32, shape=[None, Y_train.shape[1]], name='y')
 
-    # Build the network with batch normalization
+    # Build the network
     a = x
     for i, (layer_size, activation) in enumerate(zip(layers, activations)):
         # Dense layer
@@ -47,15 +47,6 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
             )
         )
 
-        # Batch normalization (only if not the output layer)
-        if i < len(layers) - 1:
-            gamma = tf.Variable(tf.ones([layer_size]), trainable=True)
-            beta = tf.Variable(tf.zeros([layer_size]), trainable=True)
-            mean, variance = tf.nn.moments(z, axes=[0])
-            z = tf.nn.batch_normalization(
-                z, mean, variance, beta, gamma, epsilon
-            )
-
         # Activation function
         if activation is not None:
             a = activation(z)
@@ -65,7 +56,12 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
     y_pred = a
 
     # Loss
-    loss = tf.losses.softmax_cross_entropy(y, y_pred)
+    loss = tf.reduce_mean(
+        tf.nn.softmax_cross_entropy_with_logits_v2(
+            labels=y,
+            logits=y_pred
+        )
+    )
 
     # Accuracy
     correct = tf.equal(tf.argmax(y, 1), tf.argmax(y_pred, 1))
@@ -132,7 +128,7 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
                     if step % 100 == 0:
                         print('\tStep {}:'.format(step))
                         print('\t\tCost: {}'.format(batch_cost))
-                        print('\t\tAccuracy {}'.format(batch_acc))
+                        print('\t\tAccuracy: {}'.format(batch_acc))
 
         save_path = saver.save(sess, save_path)
 
