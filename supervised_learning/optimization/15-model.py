@@ -67,19 +67,15 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
     correct = tf.equal(tf.argmax(y, 1), tf.argmax(y_pred, 1))
     accuracy = tf.reduce_mean(tf.cast(correct, tf.float32))
 
-    # Global step for learning rate decay
-    global_step = tf.Variable(0, trainable=False)
-    alpha_decay = alpha / (1 + decay_rate *
-                           tf.cast(global_step, tf.float32))
-
-    # Optimizer
+    # Optimizer with placeholder for learning rate
+    learning_rate = tf.placeholder(tf.float32)
     optimizer = tf.train.AdamOptimizer(
-        learning_rate=alpha_decay,
+        learning_rate=learning_rate,
         beta1=beta1,
         beta2=beta2,
         epsilon=epsilon
     )
-    train_op = optimizer.minimize(loss, global_step=global_step)
+    train_op = optimizer.minimize(loss)
 
     # Saver
     saver = tf.train.Saver()
@@ -88,14 +84,8 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
         sess.run(tf.global_variables_initializer())
 
         for epoch in range(epochs + 1):
-            # Shuffle training data before each epoch (except epoch 0)
-            if epoch > 0:
-                perm = np.random.permutation(X_train.shape[0])
-                X_train_shuffled = X_train[perm]
-                Y_train_shuffled = Y_train[perm]
-            else:
-                X_train_shuffled = X_train
-                Y_train_shuffled = Y_train
+            # Calculate learning rate with decay
+            alpha_t = alpha / (1 + decay_rate * epoch)
 
             # Evaluate on full training and validation sets
             train_cost = sess.run(loss, feed_dict={x: X_train, y: Y_train})
@@ -113,6 +103,11 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
 
             # Train on mini-batches if not at end
             if epoch < epochs:
+                # Shuffle training data before each epoch
+                perm = np.random.permutation(X_train.shape[0])
+                X_train_shuffled = X_train[perm]
+                Y_train_shuffled = Y_train[perm]
+
                 step = 0
                 for i in range(0, X_train.shape[0], batch_size):
                     X_batch = X_train_shuffled[i:i+batch_size]
@@ -120,7 +115,11 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
 
                     _, batch_cost, batch_acc = sess.run(
                         [train_op, loss, accuracy],
-                        feed_dict={x: X_batch, y: Y_batch}
+                        feed_dict={
+                            x: X_batch,
+                            y: Y_batch,
+                            learning_rate: alpha_t
+                        }
                     )
 
                     step += 1
