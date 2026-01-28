@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
-"""
-Neuron class for binary classification
-"""
-
+"""Neuron class for binary classification."""
 import numpy as np
 
 
 class Neuron:
-    """
-    Define a single neuron performing binary classification.
-    """
+    """Define a single neuron performing binary classification."""
 
     def __init__(self, nx):
-        """
-        Initialize the neuron.
+        """Initialize a neuron.
 
         Args:
             nx (int): Number of input features to the neuron.
@@ -27,15 +21,13 @@ class Neuron:
         if nx < 1:
             raise ValueError("nx must be a positive integer")
 
-        # Private attributes
         self.__W = np.random.randn(1, nx)
         self.__b = 0
         self.__A = 0
 
     @property
     def W(self):
-        """
-        Getter for the weights.
+        """Return the weights of the neuron.
 
         Returns:
             np.ndarray: The weights of the neuron.
@@ -44,8 +36,7 @@ class Neuron:
 
     @property
     def b(self):
-        """
-        Getter for the bias.
+        """Return the bias of the neuron.
 
         Returns:
             int: The bias of the neuron.
@@ -54,8 +45,7 @@ class Neuron:
 
     @property
     def A(self):
-        """
-        Getter for the activation output.
+        """Return the activation output of the neuron.
 
         Returns:
             int or float: The activation output of the neuron.
@@ -64,10 +54,9 @@ class Neuron:
 
     @A.setter
     def A(self, value):
-        """
-        Setter for the activation output.
+        """Set the activation output of the neuron.
 
         Args:
-            value (int or float): The value to set for the activation output.
+            value (int or float): The value to set for activation.
         """
         self.__A = value
