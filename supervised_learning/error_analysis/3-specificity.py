@@ -18,13 +18,15 @@ def specificity(confusion):
     """
     classes = confusion.shape[0]
     specificity_values = np.zeros(classes)
-    
+
     for i in range(classes):
         true_positive = confusion[i, i]
         false_positive = np.sum(confusion[:, i]) - true_positive
         false_negative = np.sum(confusion[i, :]) - true_positive
-        true_negative = np.sum(confusion) - true_positive - false_positive - false_negative
-        
-        specificity_values[i] = true_negative / (true_negative + false_positive)
-    
+        true_negative = (np.sum(confusion) - true_positive -
+                         false_positive - false_negative)
+
+        specificity_values[i] = (true_negative /
+                                 (true_negative + false_positive))
+
     return specificity_values
