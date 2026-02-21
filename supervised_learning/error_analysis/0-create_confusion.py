@@ -27,4 +27,3 @@ def create_confusion_matrix(labels, logits):
         confusion[true, pred] += 1
 
     return confusion
-
